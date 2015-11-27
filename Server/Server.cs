@@ -1,14 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Server
 {
     class Server
     {
-        static void Main(string[] args)
+        public void Init()
         {
             TcpListener server = null;
             try
@@ -74,10 +72,6 @@ namespace Server
                 // Stop listening for new clients.
                 server.Stop();
             }
-
-
-            Console.WriteLine("\nHit enter to continue...");
-            Console.Read();
         }
     }
 }

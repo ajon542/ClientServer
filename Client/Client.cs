@@ -1,14 +1,11 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Client
 {
     class Client
     {
-        static void Connect(String server, String message)
+        public void Connect(String server, String message)
         {
             try
             {
@@ -57,14 +54,6 @@ namespace Client
             {
                 Console.WriteLine("SocketException: {0}", e);
             }
-
-            Console.WriteLine("\n Press Enter to continue...");
-            Console.Read();
-        }
-
-        static void Main(string[] args)
-        {
-            Connect("127.0.0.1", "Hello");
         }
     }
 }
