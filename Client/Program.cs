@@ -14,6 +14,10 @@ namespace Client
             // For example, if we start a BeginReceive and then close the connection, it seems
             // to get an exception because something in the receive callback comes through
             // after the connection is closed.
+            // And indeed I think I have just found the answer to why the exceptions are
+            // occurring:
+            // http://stackoverflow.com/questions/4662553/how-to-abort-sockets-beginreceive
+            // Awesome! and... Annoying!
             Client client = new Client();
             client.StartClient();
 
