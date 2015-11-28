@@ -7,7 +7,7 @@ namespace Server
         static void Main(string[] args)
         {
             Server server = new Server();
-            server.Init();
+            server.StartListening();
 
             Console.WriteLine("\nHit enter to continue...");
             Console.Read();
