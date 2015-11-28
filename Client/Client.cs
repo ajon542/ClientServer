@@ -35,6 +35,8 @@ namespace Client
         // The response from the remote device.
         private String response = String.Empty;
 
+        Socket client;
+
         public void StartClient()
         {
             // Reset the events so they can be waited upon on subsequent calls.
@@ -52,28 +54,30 @@ namespace Client
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 
                 // Create a TCP/IP socket.
-                Socket client = new Socket(AddressFamily.InterNetwork,
+                client = new Socket(AddressFamily.InterNetwork,
                     SocketType.Stream, ProtocolType.Tcp);
 
                 // Connect to the remote endpoint.
                 client.BeginConnect(remoteEP,
                     new AsyncCallback(ConnectCallback), client);
+                
                 connectDone.WaitOne();
 
+
                 // Send test data to the remote device.
-                Send(client, "This is a test<EOF>");
-                sendDone.WaitOne();
+                //Send(client, "This is a test<EOF>");
+                //sendDone.WaitOne();
 
                 // Receive the response from the remote device.
                 Receive(client);
-                receiveDone.WaitOne();
+                //receiveDone.WaitOne();
 
                 // Write the response to the console.
-                Console.WriteLine("Response received : {0}", response);
+                //Console.WriteLine("Response received : {0}", response);
 
                 // TODO: Release the socket.
-                client.Shutdown(SocketShutdown.Both);
-                client.Close();
+                //client.Shutdown(SocketShutdown.Both);
+                //client.Close();
 
             }
             catch (Exception e)
@@ -97,6 +101,11 @@ namespace Client
 
                 // Signal that the connection has been made.
                 connectDone.Set();
+            }
+            catch (ObjectDisposedException)
+            {
+                // This case usually occurs if the client has been shutdown and closed
+                // before the ConnectCallback has been called.
             }
             catch (Exception e)
             {
@@ -142,8 +151,8 @@ namespace Client
                     Console.WriteLine("Client Received: {0}", bytesRead);
 
                     // Get the rest of the data.
-                    client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                        new AsyncCallback(ReceiveCallback), state);
+                    //client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                    //    new AsyncCallback(ReceiveCallback), state);
                 }
                 else
                 {
@@ -153,13 +162,27 @@ namespace Client
                         response = state.sb.ToString();
                     }
                     // Signal that all bytes have been received.
-                    receiveDone.Set();
+                    //receiveDone.Set();
                 }
+
+                // Get the rest of the data.
+                client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                    new AsyncCallback(ReceiveCallback), state);
+            }
+            catch (ObjectDisposedException)
+            {
+                // This case usually occurs if the client has been shutdown and closed
+                // before the ConnectCallback has been called.
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        public void Send()
+        {
+            Send(client, "Hello<EOF>");
         }
 
         private void Send(Socket client, String data)
@@ -186,10 +209,21 @@ namespace Client
                 // Signal that all bytes have been sent.
                 sendDone.Set();
             }
+            catch (ObjectDisposedException)
+            {
+                // This case usually occurs if the client has been shutdown and closed
+                // before the ConnectCallback has been called.
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        public void Close()
+        {
+            client.Shutdown(SocketShutdown.Both);
+            client.Close();
         }
     }
 }

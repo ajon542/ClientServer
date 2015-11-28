@@ -22,6 +22,8 @@ namespace Server
 
     class Server
     {
+        Socket handler;
+
         // Thread signal.
         public ManualResetEvent allDone = new ManualResetEvent(false);
 
@@ -44,7 +46,7 @@ namespace Server
                 listener.Bind(localEndPoint);
                 listener.Listen(100);
 
-                while (true)
+                //while (true)
                 {
                     // Set the event to nonsignaled state.
                     allDone.Reset();
@@ -65,8 +67,8 @@ namespace Server
                 Console.WriteLine(e.ToString());
             }
 
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
+            //Console.WriteLine("\nPress ENTER to continue...");
+            //Console.Read();
 
         }
 
@@ -77,7 +79,8 @@ namespace Server
 
             // Get the socket that handles the client request.
             Socket listener = (Socket)ar.AsyncState;
-            Socket handler = listener.EndAccept(ar);
+            // TODO: This is probably bad... this is used on the main thread
+            handler = listener.EndAccept(ar);
 
             // Create the state object.
             StateObject state = new StateObject();
@@ -114,15 +117,23 @@ namespace Server
                     Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
                         content.Length, content);
                     // Echo the data back to the client.
-                    Send(handler, content);
+                    //Send(handler, content);
                 }
                 else
                 {
                     // Not all data received. Get more.
-                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReadCallback), state);
+                    //handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                    //new AsyncCallback(ReadCallback), state);
                 }
+
+                handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                    new AsyncCallback(ReadCallback), state);
             }
+        }
+
+        public void Send()
+        {
+            Send(handler, "World");
         }
 
         private void Send(Socket handler, String data)
@@ -147,8 +158,8 @@ namespace Server
                 Console.WriteLine("Sent {0} bytes to client.", bytesSent);
 
                 // TODO: Handle socket shutdown.
-                handler.Shutdown(SocketShutdown.Both);
-                handler.Close();
+                //handler.Shutdown(SocketShutdown.Both);
+                //handler.Close();
 
             }
             catch (Exception e)

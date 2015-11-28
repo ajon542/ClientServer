@@ -32,11 +32,15 @@ namespace Client
 
                 if (ch == 's')
                 {
-                    client.StartClient();
+                    client.Send();
+                }
+                if (ch == 'c')
+                {
+                    client.Close();
                 }
 
             } while (ch != 'q');
-            
+
             Console.WriteLine("\n Press Enter to continue...");
             Console.Read();
         }

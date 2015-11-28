@@ -20,7 +20,7 @@ namespace Server
 
                 if (ch == 's')
                 {
-                    //server.Send();
+                    server.Send();
                 }
 
             } while (ch != 'q');
