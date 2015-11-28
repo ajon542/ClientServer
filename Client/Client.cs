@@ -37,6 +37,11 @@ namespace Client
 
         public void StartClient()
         {
+            // Reset the events so they can be waited upon on subsequent calls.
+            connectDone.Reset();
+            sendDone.Reset();
+            receiveDone.Reset();
+            
             // Connect to a remote device.
             try
             {
