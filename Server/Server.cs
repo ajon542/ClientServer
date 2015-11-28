@@ -99,7 +99,13 @@ namespace Server
             Socket handler = state.workSocket;
 
             // Read data from the client socket. 
-            int bytesRead = handler.EndReceive(ar);
+            //int bytesRead = handler.EndReceive(ar);
+            SocketError errorCode;
+            int bytesRead = handler.EndReceive(ar, out errorCode);
+            if (errorCode != SocketError.Success)
+            {
+                bytesRead = 0;
+            }
 
             if (bytesRead > 0)
             {
