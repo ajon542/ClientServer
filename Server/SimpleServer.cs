@@ -62,16 +62,35 @@ namespace Server
                 // Read data from the remote device.
                 int bytesRead = client.EndReceive(ar);
 
-                Console.WriteLine("Server Received: {0}", bytesRead);
+                if (bytesRead > 0)
+                {
+                    Console.WriteLine("Server Received: {0}", bytesRead);
 
-                // Get the rest of the data.
-                client.BeginReceive(buffer, 0, 1024, 0,
-                    new AsyncCallback(ReceiveCallback), null);
+                    // Continue receiving data.
+                    client.BeginReceive(buffer, 0, 1024, 0,
+                        new AsyncCallback(ReceiveCallback), null);
+                }
+                else
+                {
+                    // If the client closes the socket normally, bytes read will be 0.
+                    // We also want to close the connection and begin listening again.
+                    Console.WriteLine("Received nothing");
+                    //listener.Shutdown(SocketShutdown.Both);
+                    listener.Close();
+                    client.Shutdown(SocketShutdown.Both);
+                    client.Close();
+                    Listen();
+                }
+
             }
             catch (Exception e)
             {
+                // This occurs mainly when a client forcibly shuts down
+                // the connection. In this case, close the listener and
+                // start listening for new connections.
                 Console.WriteLine(e);
                 listener.Close();
+                listener.Shutdown(SocketShutdown.Both);
                 client.Shutdown(SocketShutdown.Both);
                 client.Close();
                 Listen();

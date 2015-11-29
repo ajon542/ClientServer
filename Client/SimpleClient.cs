@@ -69,5 +69,10 @@ namespace Client
             }
         }
 
+        public void Close()
+        {
+            client.Shutdown(SocketShutdown.Both);
+            client.Close();
+        }
     }
 }

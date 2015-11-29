@@ -34,6 +34,10 @@ namespace Client
                 {
                     client.Send("Hello");
                 }
+                if (ch == 'c')
+                {
+                    client.Close();
+                }
 
             } while (ch != 'q');
 
