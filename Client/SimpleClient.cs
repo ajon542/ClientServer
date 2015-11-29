@@ -40,7 +40,8 @@ namespace Client
         {
             try
             {
-                byte[] data = Encoding.ASCII.GetBytes(msg);
+                //byte[] data = Encoding.ASCII.GetBytes(msg);
+                byte[] data = new byte[1024];
                 int bytesSent = client.Send(data);
             }
             catch (Exception e)
