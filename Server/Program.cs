@@ -6,8 +6,8 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Server server = new Server();
-            server.StartListening();
+            SimpleServer server = new SimpleServer();
+            server.Listen();
 
             int x;
             char ch;
@@ -20,7 +20,7 @@ namespace Server
 
                 if (ch == 's')
                 {
-                    server.Send();
+                    server.Send("HellowWorld");
                 }
 
             } while (ch != 'q');

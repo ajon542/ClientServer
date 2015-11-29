@@ -18,8 +18,8 @@ namespace Client
             // occurring:
             // http://stackoverflow.com/questions/4662553/how-to-abort-sockets-beginreceive
             // Awesome! and... Annoying!
-            Client client = new Client();
-            client.StartClient();
+            SimpleClient client = new SimpleClient();
+            client.Connect();
 
             int x;
             char ch;
@@ -32,11 +32,7 @@ namespace Client
 
                 if (ch == 's')
                 {
-                    client.Send();
-                }
-                if (ch == 'c')
-                {
-                    client.Close();
+                    client.Send("Hello");
                 }
 
             } while (ch != 'q');
