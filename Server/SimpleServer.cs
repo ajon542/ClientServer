@@ -75,10 +75,8 @@ namespace Server
                     // If the client closes the socket normally, bytes read will be 0.
                     // We also want to close the connection and begin listening again.
                     Console.WriteLine("Received nothing");
-                    //listener.Shutdown(SocketShutdown.Both);
-                    listener.Close();
-                    client.Shutdown(SocketShutdown.Both);
-                    client.Close();
+                    
+                    Close();
                     Listen();
                 }
 
@@ -89,12 +87,19 @@ namespace Server
                 // the connection. In this case, close the listener and
                 // start listening for new connections.
                 Console.WriteLine(e);
-                listener.Close();
-                listener.Shutdown(SocketShutdown.Both);
-                client.Shutdown(SocketShutdown.Both);
-                client.Close();
+
+                Close();
                 Listen();
             }
+        }
+
+        private void Close()
+        {
+            // TODO: listener.Shutdown causes an exception to be thrown. Not sure why.
+            //listener.Shutdown(SocketShutdown.Both);
+            listener.Close();
+            client.Shutdown(SocketShutdown.Both);
+            client.Close();
         }
     }
 }
