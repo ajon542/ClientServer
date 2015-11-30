@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 
 namespace Server
 {
@@ -32,8 +30,7 @@ namespace Server
                 client = listener.Accept();
                 Console.WriteLine("Connection Established.");
 
-                client.BeginReceive(buffer, 0, 1024, 0,
-                    new AsyncCallback(ReceiveCallback), null);
+                client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);
             }
             catch (Exception e)
             {
@@ -67,15 +64,12 @@ namespace Server
                     Console.WriteLine("Server Received: {0}", bytesRead);
 
                     // Continue receiving data.
-                    client.BeginReceive(buffer, 0, 1024, 0,
-                        new AsyncCallback(ReceiveCallback), null);
+                    client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);
                 }
                 else
                 {
                     // If the client closes the socket normally, bytes read will be 0.
                     // We also want to close the connection and begin listening again.
-                    Console.WriteLine("Received nothing");
-                    
                     Close();
                     Listen();
                 }

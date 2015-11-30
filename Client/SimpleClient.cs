@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 
 namespace Client
 {
@@ -22,12 +20,12 @@ namespace Client
                 // Create a TCP/IP socket.
                 client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+                // Connect to the remote endpoint.
                 client.Connect(remoteEP);
 
                 Console.WriteLine("Client connected to {0}", client.RemoteEndPoint);
 
-                client.BeginReceive(buffer, 0, 1024, 0,
-                    new AsyncCallback(ReceiveCallback), null);
+                client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);
             }
             catch(Exception e)
             {
@@ -60,8 +58,7 @@ namespace Client
                 Console.WriteLine("Client Received: {0}", bytesRead);
 
                 // Get the rest of the data.
-                client.BeginReceive(buffer, 0, 1024, 0,
-                    new AsyncCallback(ReceiveCallback), null);
+                client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);
             }
             catch (Exception e)
             {
