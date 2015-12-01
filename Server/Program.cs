@@ -8,7 +8,6 @@ namespace Server
         {
             SimpleServer server = new SimpleServer();
             server.Listen();
-            //server.StartListening();
 
             int x;
             char ch;

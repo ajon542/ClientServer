@@ -6,18 +6,6 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            // Opening a connection for each message is just not going to work.
-            // This is ok for the client to get information from the server, but there
-            // is no way for the server to send a message to the client this way.
-            // We must leave the socket open when the client connects. However, I have
-            // encountered some issues when closing the connection under these circumstances.
-            // For example, if we start a BeginReceive and then close the connection, it seems
-            // to get an exception because something in the receive callback comes through
-            // after the connection is closed.
-            // And indeed I think I have just found the answer to why the exceptions are
-            // occurring:
-            // http://stackoverflow.com/questions/4662553/how-to-abort-sockets-beginreceive
-            // Awesome! and... Annoying!
             SimpleClient client = new SimpleClient();
             client.Connect();
 
