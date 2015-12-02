@@ -10,9 +10,24 @@ namespace Client
     /// </summary>
     class SimpleClient
     {
-        private Socket client;
-        private byte[] buffer = new byte[1024];
+        /// <summary>
+        /// The size of buffer for receiving data.
+        /// </summary>
+        private const int BufferSize = 1024;
 
+        /// <summary>
+        /// The buffer for receiving data.
+        /// </summary>
+        private byte[] buffer = new byte[BufferSize];
+
+        /// <summary>
+        /// The client socket.
+        /// </summary>
+        private Socket client;
+
+        /// <summary>
+        /// Connect to the server.
+        /// </summary>
         public void Connect()
         {
             try
@@ -29,7 +44,8 @@ namespace Client
 
                 Console.WriteLine("Client connected to {0}", client.RemoteEndPoint);
 
-                client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);
+                // Begin receiving data from the server.
+                client.BeginReceive(buffer, 0, BufferSize, 0, ReceiveCallback, null);
             }
             catch(Exception e)
             {
@@ -37,7 +53,10 @@ namespace Client
             }
         }
 
-
+        /// <summary>
+        /// Send a message to the server.
+        /// </summary>
+        /// <param name="msg">The message to send.</param>
         public void Send(string msg)
         {
             try
@@ -51,6 +70,10 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// The asynchronous data received callback.
+        /// </summary>
+        /// <param name="ar">The asynchronous result.</param>
         private void ReceiveCallback(IAsyncResult ar)
         {
             try
@@ -60,11 +83,12 @@ namespace Client
 
                 Console.WriteLine("Client Received: {0}", bytesRead);
 
+                // Copy the data from the buffer.
                 byte[] data = new byte[bytesRead];
                 Array.Copy(buffer, 0, data, 0, bytesRead);
 
-                // Get the rest of the data.
-                client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);
+                // Continue receiving data.
+                client.BeginReceive(buffer, 0, BufferSize, 0, ReceiveCallback, null);
             }
             catch (Exception e)
             {
@@ -72,6 +96,9 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Close the socket.
+        /// </summary>
         public void Close()
         {
             client.Shutdown(SocketShutdown.Both);

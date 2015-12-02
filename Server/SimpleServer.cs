@@ -10,10 +10,34 @@ namespace Server
     /// </summary>
     class SimpleServer
     {
-        private Socket listener;
-        private Socket client;
-        private byte[] buffer = new byte[1024];
+        /// <summary>
+        /// The size of buffer for receiving data.
+        /// </summary>
+        private const int BufferSize = 1024;
 
+        /// <summary>
+        /// The buffer for receiving data.
+        /// </summary>
+        private byte[] buffer = new byte[BufferSize];
+
+        /// <summary>
+        /// The listener socket.
+        /// </summary>
+        private Socket listener;
+
+        /// <summary>
+        /// The client socket.
+        /// </summary>
+        private Socket client;
+
+        /// <summary>
+        /// Start listening for a single client connection.
+        /// </summary>
+        /// <remarks>
+        /// Once the connection is made, the server will communicate with the
+        /// client until the connection is lost or closed. At this point, it
+        /// will begin listening for a new client.
+        /// </remarks>
         public void Listen()
         {
             try
@@ -34,7 +58,8 @@ namespace Server
                 client = listener.Accept();
                 Console.WriteLine("Connection Established.");
 
-                client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);
+                // Begin receiving data from the client.
+                client.BeginReceive(buffer, 0, BufferSize, 0, ReceiveCallback, null);
             }
             catch (Exception e)
             {
@@ -42,6 +67,10 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// Send a message to the client.
+        /// </summary>
+        /// <param name="msg">The message to send.</param>
         public void Send(string msg)
         {
             try
@@ -55,6 +84,10 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// The asynchronous data received callback.
+        /// </summary>
+        /// <param name="ar">The asynchronous result.</param>
         private void ReceiveCallback(IAsyncResult ar)
         {
             try
@@ -70,7 +103,7 @@ namespace Server
                     Array.Copy(buffer, 0, data, 0, bytesRead);
 
                     // Continue receiving data.
-                    client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);
+                    client.BeginReceive(buffer, 0, BufferSize, 0, ReceiveCallback, null);
                 }
                 else
                 {
@@ -93,6 +126,9 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// Close the socket.
+        /// </summary>
         private void Close()
         {
             // TODO: listener.Shutdown causes an exception to be thrown. Not sure why.
