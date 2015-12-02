@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace Client
 {
+    /// <summary>
+    /// Basic client implementation.
+    /// </summary>
     class SimpleClient
     {
-        Socket client;
-        byte[] buffer = new byte[1024];
+        private Socket client;
+        private byte[] buffer = new byte[1024];
 
         public void Connect()
         {
@@ -38,8 +42,7 @@ namespace Client
         {
             try
             {
-                //byte[] data = Encoding.ASCII.GetBytes(msg);
-                byte[] data = new byte[1024];
+                byte[] data = Encoding.ASCII.GetBytes(msg);
                 int bytesSent = client.Send(data);
             }
             catch (Exception e)
@@ -56,6 +59,9 @@ namespace Client
                 int bytesRead = client.EndReceive(ar);
 
                 Console.WriteLine("Client Received: {0}", bytesRead);
+
+                byte[] data = new byte[bytesRead];
+                Array.Copy(buffer, 0, data, 0, bytesRead);
 
                 // Get the rest of the data.
                 client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);

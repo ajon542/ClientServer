@@ -28,9 +28,6 @@ namespace Client
                 }
 
             } while (ch != 'q');
-
-            Console.WriteLine("\n Press Enter to continue...");
-            Console.Read();
         }
     }
 }

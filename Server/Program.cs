@@ -24,11 +24,6 @@ namespace Server
                 }
 
             } while (ch != 'q');
-
-            return;
-
-            Console.WriteLine("\nHit enter to continue...");
-            Console.Read();
         }
     }
 }

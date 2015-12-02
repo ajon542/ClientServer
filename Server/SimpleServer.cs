@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace Server
 {
+    /// <summary>
+    /// Basic server implementation.
+    /// </summary>
     class SimpleServer
     {
-        Socket listener;
-        Socket client;
-        byte[] buffer = new byte[1024];
+        private Socket listener;
+        private Socket client;
+        private byte[] buffer = new byte[1024];
 
         public void Listen()
         {
@@ -42,8 +46,7 @@ namespace Server
         {
             try
             {
-                //byte[] data = Encoding.ASCII.GetBytes(msg);
-                byte[] data = new byte[1024];
+                byte[] data = Encoding.ASCII.GetBytes(msg);
                 client.Send(data);
             }
             catch (Exception e)
@@ -62,6 +65,9 @@ namespace Server
                 if (bytesRead > 0)
                 {
                     Console.WriteLine("Server Received: {0}", bytesRead);
+
+                    byte[] data = new byte[bytesRead];
+                    Array.Copy(buffer, 0, data, 0, bytesRead);
 
                     // Continue receiving data.
                     client.BeginReceive(buffer, 0, 1024, 0, ReceiveCallback, null);
