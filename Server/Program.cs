@@ -4,8 +4,20 @@ namespace Server
 {
     class Program
     {
+        static void Hello(BaseMsg msg)
+        {
+            Console.WriteLine("Hello");
+        }
+
         static void Main(string[] args)
         {
+            // Example of registering and invoking a service.
+            IServerContext context = new ServerContext();
+            context.RegisterService("hello", Hello);
+            context.InvokeService(new BaseMsg { Type = "hello" });
+
+
+
             SimpleServer server = new SimpleServer();
             server.Listen();
 
